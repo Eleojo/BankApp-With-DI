@@ -15,25 +15,31 @@ namespace BankApp.Services.TransactionHistoryServices
     {
         public void DisplayTransactionHistory(Guid userId)
         {
-            BankApp_DbContext db = new BankApp_DbContext();
-            List<TransactionHistory> transactions = db.GetUserTransactions(userId);
+            //BankApp_DbContext db = new BankApp_DbContext();
 
-            if (transactions.Count == 0)
+            using (BankApp_DbContext db = new BankApp_DbContext())
             {
-                Console.WriteLine("No transactions found.");
-                return;
+
+                List<TransactionHistory> transactions = db.GetUserTransactions(userId);
+
+                if (transactions.Count == 0)
+                {
+                    Console.WriteLine("No transactions found.");
+                    return;
+                }
+
+                ConsoleTableBuilder
+                    .From(transactions.Select(t => new
+                    {
+                        t.Id,
+                        t.TransactionType,
+                        t.Amount,
+                        t.Timestamp
+                    }).ToList())
+                    .WithFormat(ConsoleTableBuilderFormat.Alternative)
+                    .ExportAndWriteLine();
             }
 
-            ConsoleTableBuilder
-                .From(transactions.Select(t => new
-                {
-                    t.Id,
-                    t.TransactionType,
-                    t.Amount,
-                    t.Timestamp
-                }).ToList())
-                .WithFormat(ConsoleTableBuilderFormat.Alternative)
-                .ExportAndWriteLine();
         }
 
         public void ViewTransactionHistory(User sessionUser)

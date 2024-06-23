@@ -43,7 +43,7 @@ namespace BankApp.Services.AuthServices
 
                 if (user != null)
                 {
-                    UserSession.loggedInUser = user;
+                    UserSession.LoggedInUser = user;
                     return true;
                 }
                 return false;

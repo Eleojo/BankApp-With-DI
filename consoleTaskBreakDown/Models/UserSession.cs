@@ -8,6 +8,8 @@ namespace BankApp.Classes
 {
     internal class UserSession
     {
-        public static User loggedInUser {  get; set; }
+        public static User LoggedInUser {  get; set; }
+        public static User RegisteredUser { get; set; }
+
     }
 }

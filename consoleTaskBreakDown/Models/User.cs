@@ -8,9 +8,9 @@ namespace BankApp.Classes
 {
     public class User
     {
-        public User(Guid id, string firstName, string lastName, string email, string password)
+        public User(string firstName, string lastName, string email, string password)
         {
-            this.Id = id;
+            this.Id = new Guid();
             this.FirstName = firstName;
             this.LastName = lastName;
             this.Email = email;

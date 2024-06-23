@@ -73,7 +73,8 @@ namespace BankApp.Services.AccountServices
                 {
                     string oppositeAccountType = accountType == "current" ? "savings" : "current";
                     Console.WriteLine($"You already have a {existingAccount.accountType} account with us. To open another account, it must be a {oppositeAccountType} account.");
-                    Thread.Sleep(2000);
+                    Console.WriteLine("\nPress any key to continue ");
+                    Console.ReadKey();
                 }
                 //return;
             }

@@ -8,6 +8,6 @@ namespace BankApp.Services.UserServices
 {
     public interface IUserService
     {
-        Guid RegisterUser();
+        void RegisterUser();
     }
 }

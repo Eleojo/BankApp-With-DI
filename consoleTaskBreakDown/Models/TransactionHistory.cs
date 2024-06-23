@@ -16,18 +16,20 @@ namespace BankApp.Models
         public Guid UserId { get; set; }
         public string TransactionType { get; set; } // e.g., "Deposit", "Withdrawal", "Transfer"
         public decimal Amount { get; set; }
+        public string sender { get; set; }
+        public string description { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public TransactionHistory(Guid userId, string transactionType, decimal amount)
+        public TransactionHistory(Guid userId, string transactionType, decimal amount, string sender, string description)
         {
-            Id = Guid.NewGuid();
+            Id = new Guid();
             UserId = userId;
             TransactionType = transactionType;
             Amount = amount;
+            this.sender = sender;
+            this.description = description;
             Timestamp = DateTime.Now;
         }
-
-
     }
 
 }

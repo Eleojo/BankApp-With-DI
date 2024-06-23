@@ -59,7 +59,7 @@ namespace BankApp
                     //UserService userMethod = new UserService();
                     //userId = userMethod.RegisterUser();
 
-                   userId = _userService.RegisterUser();
+                   _userService.RegisterUser();
 
                     Console.WriteLine("would you like to open an account now?  Y/N");
                     string choice = Console.ReadLine().ToLower();
@@ -67,7 +67,7 @@ namespace BankApp
                     if (choice == "y")
                     {
                         //AccountService.OpenAccount(userId);
-                        _accountService.OpenAccount(userId);
+                        _accountService.OpenAccount(UserSession.RegisteredUser.Id);
                     }
                     else
                     {
@@ -111,8 +111,8 @@ namespace BankApp
                 while (loggedIn)
                 {
                     Console.Clear();
-                    //var appDashBoard = new DashBoardServices();
-                    _dashBoardService.ApplicationDashBoard(UserSession.loggedInUser);
+                    //UserSession userSession = new UserSession();
+                    _dashBoardService.ApplicationDashBoard(UserSession.LoggedInUser);
 
                     string userInput = Console.ReadLine();
 
@@ -123,26 +123,26 @@ namespace BankApp
 
                     else if (userInput == "1")
                     {
-                        _transactionsService.WithdrawMoney(UserSession.loggedInUser);
+                        _transactionsService.WithdrawMoney(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
                     else if (userInput == "2")
                     {
-                        _transactionsService.DepositMoney(UserSession.loggedInUser);
+                        _transactionsService.DepositMoney(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
                     else if (userInput == "3")
                     {
-                        AccountService.DisplayAccountInfo(UserSession.loggedInUser);
+                        AccountService.DisplayAccountInfo(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
                     else if (userInput == "4")
                     {
 
-                        _transactionsService.Transfer(UserSession.loggedInUser);
+                        _transactionsService.Transfer(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
@@ -171,7 +171,7 @@ namespace BankApp
                     }
                     else if (userInput == "6")
                     {
-                        _transactionHistoryService.ViewTransactionHistory(UserSession.loggedInUser);
+                        _transactionHistoryService.ViewTransactionHistory(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }

@@ -13,16 +13,16 @@ namespace BankApp.Services.UserServices
 {
     public class UserService : IUserService
     {
-        public Guid RegisterUser()
+        public void RegisterUser()
         {
-            var id = Guid.NewGuid();
+            //var id = Guid.NewGuid();
 
             string firstName = Validations.GetValidInput("Enter your FirstName:", Validations.IsValidName, "Name cannot be empty or contain digits. Please try again.");
             string lastName = Validations.GetValidInput("Enter your LastName:", Validations.IsValidName, "Name cannot be empty or contain digits. Please try again.");
             string email = Validations.GetValidInput("Enter your email:", Validations.IsValidEmail, "Incorrect email address. Please try again.");
             string password = Validations.GetValidInput("Enter your password:", Validations.IsValidPassword, "Password must contain at least 6 characters, one uppercase letter, one digit, and one special character. Please try again.");
 
-            User newUser = new User(id, Validations.Capitalize(firstName), Validations.Capitalize(lastName), email, password);
+            User newUser = new User(Validations.Capitalize(firstName), Validations.Capitalize(lastName), email, password);
 
             using (BankApp_DbContext db = new BankApp_DbContext())
             {
@@ -36,7 +36,7 @@ namespace BankApp.Services.UserServices
                 {
                     // User already exists, access their account
                     Console.WriteLine("User already exists....\n");
-                    return foundUser.Id;
+                    //return foundUser.Id;
 
                     //Thread.Sleep(2000); // Sleep for 2000 milliseconds (2 seconds)
 
@@ -45,11 +45,16 @@ namespace BankApp.Services.UserServices
                 {
                     // User does not exist, register the new user
                     db.AddEntity(newUser);
+
+                    // instantiate and persist newUser in preparation for account creation
+                    //UserSession userSession = new UserSession();
+                    UserSession.RegisteredUser = newUser;
+
                     Console.WriteLine("User Registered Successfully");
                 }
             }
 
-            return id;
+            //return id;
         }
 
 
