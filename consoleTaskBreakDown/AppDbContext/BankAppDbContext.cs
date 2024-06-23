@@ -16,7 +16,7 @@ namespace BankApp.Database
 
     //}
 
-    public class BankApp_DbContext : DbContext
+    public class BankAppDbContext : DbContext
     {
         public  DbSet<User> Users { get; set; }
         public  DbSet<Account> Accounts { get; set; }
@@ -29,26 +29,27 @@ namespace BankApp.Database
         }
 
         // Add User or Account type to database
-        public void AddEntity<T>(T entity) where T : class
+        public async Task AddEntity<T>(T entity) where T : class
         {
-            using (var context = new BankApp_DbContext())
+            using (var context = new BankAppDbContext())
             {
-                context.Set<T>().Add(entity); // instead of context.Users.Add(user) or context.Accounts.Add(account)[instead of creating two seperate but similar functions]
-                context.SaveChanges();
+                await context.Set<T>().AddAsync(entity); // instead of context.Users.Add(user) or context.Accounts.Add(account)[instead of creating two seperate but similar functions]
+                await context.SaveChangesAsync();
+                
             }
         }
         // Retrieve all users or accounts from Database
-        public List<T> GetAllEntities<T>() where T : class
+        public async Task<List<T>> GetAllEntities<T>() where T : class
         {
-            using (var context = new BankApp_DbContext())
+            using (var context = new BankAppDbContext())
             {
-                return context.Set<T>().ToList(); // Instead of context.Users.Add
+                return await context.Set<T>().ToListAsync(); // Instead of context.Users.Add
             }
         }
 
         public void UpdateEntities<T>(List<T> updatedEntities) where T : class
         {
-            using (var context = new BankApp_DbContext())
+            using (var context = new BankAppDbContext())
             {
                 foreach (var entity in updatedEntities)
                 {
@@ -58,9 +59,9 @@ namespace BankApp.Database
             }
         }
 
-        public List<TransactionHistory> GetUserTransactions(Guid userId)
+        public List<TransactionHistory> GetUserTransactions(Guid accountId)
         {
-            return Transactions.Where(t => t.UserId == userId).ToList();
+            return Transactions.Where(t => t.AccountId == accountId).ToList();
         }
     }
 }

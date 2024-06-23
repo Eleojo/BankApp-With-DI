@@ -13,7 +13,7 @@ namespace BankApp.Services.UserServices
 {
     public class UserService : IUserService
     {
-        public void RegisterUser()
+        public async Task RegisterUser()
         {
             //var id = Guid.NewGuid();
 
@@ -24,10 +24,10 @@ namespace BankApp.Services.UserServices
 
             User newUser = new User(Validations.Capitalize(firstName), Validations.Capitalize(lastName), email, password);
 
-            using (BankApp_DbContext db = new BankApp_DbContext())
+            using (BankAppDbContext db = new BankAppDbContext())
             {
-                List<User> users = db.GetAllEntities<User>();
-                List<Account> accounts = db.GetAllEntities<Account>();
+                var users = await db.GetAllEntities<User>();
+                var accounts = await db.GetAllEntities<Account>();
 
                 // Find the user by email
                 User foundUser = users.FirstOrDefault(user => user.Email.Equals(email, StringComparison.OrdinalIgnoreCase));

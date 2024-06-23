@@ -31,16 +31,17 @@ namespace BankApp
 
         }
 
-        public Run(IUserService userService, IAccountService accountService, IAuthService authService, IDashBoardService dashBoardService, ITransactionService transactionsService)
+        public Run(IUserService userService, IAccountService accountService, IAuthService authService, IDashBoardService dashBoardService, ITransactionService transactionsService, ITransactionHistoryService transactionHistoryService)
         {
             _userService = userService;
             _accountService = accountService;
             _authService = authService;
             _dashBoardService = dashBoardService;
             _transactionsService = transactionsService;
+            _transactionHistoryService = transactionHistoryService;
         }
 
-        public void StartApp()
+        public async Task StartApp()
         {
 
             bool loggedIn = false;
@@ -135,7 +136,7 @@ namespace BankApp
                     }
                     else if (userInput == "3")
                     {
-                        AccountService.DisplayAccountInfo(UserSession.LoggedInUser);
+                        _accountService.DisplayAccountInfo(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
@@ -148,22 +149,22 @@ namespace BankApp
                     }
                     else if (userInput == "5")
                     {
-                        using (var db = new BankApp_DbContext())
+                        using (var db = new BankAppDbContext())
                         {
-                            List<User> users = db.GetAllEntities<User>();
-                            List<Account> accounts = db.GetAllEntities<Account>();
+                           var users = await db.GetAllEntities<User>();
+                            var accounts = await db.GetAllEntities<Account>();
 
                             Console.WriteLine("What Database would you like to see");
                             string dbType = Console.ReadLine().ToLower();
-                            var show = new AccountService();
+                           // var show = new AccountService();
 
                             if (dbType == "users")
                             {
-                                show.showAllDb(users);
+                                _accountService.ShowAllDb(users);
                             }
                             else if (dbType == "accounts")
                             {
-                                show.showAllDb(accounts);
+                                _accountService.ShowAllDb(accounts);
                             }
                             Console.WriteLine("\nPress any key to continue...");
                             Console.ReadKey();
@@ -171,7 +172,7 @@ namespace BankApp
                     }
                     else if (userInput == "6")
                     {
-                        _transactionHistoryService.ViewTransactionHistory(UserSession.LoggedInUser);
+                        _transactionHistoryService.DisplayTransactionHistory(UserSession.LoggedInUser);
                         Console.WriteLine("\nPress any key to continue ");
                         Console.ReadKey();
                     }
@@ -189,7 +190,7 @@ namespace BankApp
             }
         }
 
-        private static void LandingPageMenu()
+        private void LandingPageMenu()
         {
             Console.WriteLine("Welcome to UrLedger Bank");
             Console.WriteLine("=========================");

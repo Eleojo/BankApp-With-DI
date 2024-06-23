@@ -37,7 +37,7 @@ namespace BankApp.Services.AuthServices
 
         public bool AuthenticateUser(string email, string password)
         {
-            using (var db = new BankApp_DbContext())
+            using (var db = new BankAppDbContext())
             {
                 var user = db.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
 

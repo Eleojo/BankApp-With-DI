@@ -13,17 +13,20 @@ namespace BankApp.Models
     public class TransactionHistory
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public Guid AccountId { get; set; }
+        //public Guid UserId { get; set; } // Add this propertz
         public string TransactionType { get; set; } // e.g., "Deposit", "Withdrawal", "Transfer"
         public decimal Amount { get; set; }
         public string sender { get; set; }
         public string description { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public TransactionHistory(Guid userId, string transactionType, decimal amount, string sender, string description)
+        
+
+        public TransactionHistory(Guid accountId, string transactionType, decimal amount, string sender, string description)
         {
             Id = new Guid();
-            UserId = userId;
+            AccountId = accountId;
             TransactionType = transactionType;
             Amount = amount;
             this.sender = sender;

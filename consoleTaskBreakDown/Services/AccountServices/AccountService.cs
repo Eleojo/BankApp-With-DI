@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +24,11 @@ namespace BankApp.Services.AccountServices
 
 
 
-        public void OpenAccount(Guid userId)
+        public async Task OpenAccount(Guid userId)
         {
-            BankApp_DbContext db = new BankApp_DbContext();
-            List<User> users = db.GetAllEntities<User>();
-            List<Account> accounts = db.GetAllEntities<Account>();
+            BankAppDbContext db = new BankAppDbContext();
+            var users = await db.GetAllEntities<User>();
+            var accounts = await db.GetAllEntities<Account>();
 
             Console.WriteLine("Choose Account Type you want to open: ");
             Console.WriteLine("Press 1 for Current:");
@@ -50,7 +51,7 @@ namespace BankApp.Services.AccountServices
                 return; // Exit the method if input is invalid
             }
 
-            string accountNumber = GenerateRandomAccountNumber();  // Generate the 10-digit account number
+            string accountNumber = await GenerateRandomAccountNumber();  // Generate the 10-digit account number
             decimal initialAccountBalance = 0;
 
             // Check if the user already has the same type of account
@@ -90,33 +91,33 @@ namespace BankApp.Services.AccountServices
         }
 
         // Ensure that GenerateRandomAccountNumber() method generates unique account numbers
-        private static string GenerateRandomAccountNumber()
+        private static async Task<string> GenerateRandomAccountNumber()
         {
             Random random = new Random();
             string accountNumber;
             do
             {
                 accountNumber = random.Next(1000000000, 1999999999).ToString(); // Ensures a 10-digit number
-            } while (!IsUniqueAccountNumber(accountNumber));
+            } while (!await IsUniqueAccountNumber(accountNumber));
 
             return accountNumber;
         }
 
         // Method to check if account number is unique
-        private static bool IsUniqueAccountNumber(string accountNumber)
+        private async static Task<bool> IsUniqueAccountNumber(string accountNumber)
         {
-            using (var db = new BankApp_DbContext())
+            using (var db = new BankAppDbContext())
             {
-                List<Account> accounts = db.GetAllEntities<Account>();
+                var accounts = await db.GetAllEntities<Account>();
                 return !accounts.Any(a => a.accountNumber == accountNumber);
             }
         }
 
-        public static void DisplayAccountInfo(User sessionUser)
+        public async Task DisplayAccountInfo(User sessionUser)
         {
-            BankApp_DbContext db = new BankApp_DbContext();
-            List<Account> accounts = db.GetAllEntities<Account>();
-            List<User> users = db.GetAllEntities<User>();
+            BankAppDbContext db = new BankAppDbContext();
+            var accounts = await db.GetAllEntities<Account>();
+            var users = await db.GetAllEntities<User>();
 
             // Use LINQ to filter users and join with accounts
             var accountDisplays = users
@@ -140,14 +141,14 @@ namespace BankApp.Services.AccountServices
                     .From(accountDisplays)
                     .WithFormat(ConsoleTableBuilderFormat.Alternative)
                     .ExportAndWriteLine();
-                // showAllDb(accountDisplays);
+                // ShowAllDb(accountDisplays);
             }
             else
             {
                 Console.WriteLine("User not found in database");
             }
         }
-        public void showAllDb<T>(List<T> obj) where T : class
+        public void ShowAllDb<T>(List<T> obj) where T : class
         {
             ConsoleTableBuilder
                 .From(obj)

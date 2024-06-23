@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BankApp.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace BankApp.Services.AccountServices
 {
     public interface IAccountService
     {
-        void OpenAccount(Guid userId);
+        Task OpenAccount(Guid userId);
+        Task DisplayAccountInfo(User sessionUser);
+        void ShowAllDb<T>(List<T> obj) where T : class;
     }
 }

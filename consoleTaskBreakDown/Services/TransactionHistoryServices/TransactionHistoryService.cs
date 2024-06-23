@@ -13,14 +13,15 @@ namespace BankApp.Services.TransactionHistoryServices
 {
     internal class TransactionHistoryService : ITransactionHistoryService
     {
-        public void DisplayTransactionHistory(Guid userId)
+        public async Task DisplayTransactionHistory(User sessionUser)
         {
             //BankApp_DbContext db = new BankApp_DbContext();
 
-            using (BankApp_DbContext db = new BankApp_DbContext())
+            using (BankAppDbContext db = new BankAppDbContext())
             {
-
-                List<TransactionHistory> transactions = db.GetUserTransactions(userId);
+                List<Account> accounts = await db.GetAllEntities<Account>();
+                Account foundAcount = accounts.FirstOrDefault(account => account.userId.Equals(sessionUser.Id));
+                var transactions =  db.GetUserTransactions(foundAcount.Id);
 
                 if (transactions.Count == 0)
                 {
@@ -42,15 +43,7 @@ namespace BankApp.Services.TransactionHistoryServices
 
         }
 
-        public void ViewTransactionHistory(User sessionUser)
-        {
-            using (BankApp_DbContext db = new BankApp_DbContext())
-            {
-
-                DisplayTransactionHistory(sessionUser.Id);
-
-            }
-        }
+       
 
 
     }

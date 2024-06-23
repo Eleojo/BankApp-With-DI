@@ -13,16 +13,22 @@ namespace BankApp.Services.TransactionServices
 {
     public class TransactionService : ITransactionService
     {
+        private readonly IAccountService _accountService;
 
-        public void WithdrawMoney(User sessionUser)
+        public TransactionService(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
+        public async Task WithdrawMoney(User sessionUser)
         {
             //BankApp_DbContext db = new BankApp_DbContext();
             //List<User> users = db.GetAllEntities<User>();
 
-            using (BankApp_DbContext db = new BankApp_DbContext())
+            using (BankAppDbContext db = new BankAppDbContext())
             {
 
-                List<Account> accounts = db.GetAllEntities<Account>();
+                var accounts = await db.GetAllEntities<Account>();
 
                 // Find the user with the specified account number
                 Account foundAccount = accounts.FirstOrDefault(account => account.userId.Equals(sessionUser.Id));
@@ -46,7 +52,7 @@ namespace BankApp.Services.TransactionServices
                         TransactionHistory RecordedTransaction = new TransactionHistory(foundAccount.userId, "Credit", withdrawAmount, sessionUser.FirstName, "Self");
                         db.AddEntity(RecordedTransaction);
                         Console.WriteLine($"Success !! You have withdrawn {withdrawAmount} and your new balance is {foundAccount.accountBalance} ");
-                        AccountService.DisplayAccountInfo(sessionUser);
+                        _accountService.DisplayAccountInfo(sessionUser);
                         Console.WriteLine("Press Enter key to return to main menu");
                     }
                 }
@@ -57,14 +63,14 @@ namespace BankApp.Services.TransactionServices
             }
         }
 
-        public void DepositMoney(User sessionUser)
+        public async Task DepositMoney(User sessionUser)
         {
             //BankApp_DbContext db = new BankApp_DbContext();
             //List<User> users = db.GetAllEntities<User>();
-            using (BankApp_DbContext db = new BankApp_DbContext())
+            using (BankAppDbContext db = new BankAppDbContext())
             {
 
-                List<Account> accounts = db.GetAllEntities<Account>();
+                var accounts = await db.GetAllEntities<Account>();
 
                 decimal depositAmount = Validations.GetValidInput("Enter amount to deposit:", Validations.IsValidAmount, "Use Numbers.Please try again.");
 
@@ -78,11 +84,14 @@ namespace BankApp.Services.TransactionServices
                     // Perform the deposit
                     //foundAccount.accountBa += depositAmount;
                     foundAcount.accountBalance += depositAmount;
+
                     db.UpdateEntities(accounts); // Update database
-                    TransactionHistory RecordedTransaction = new TransactionHistory(foundAcount.userId, "Credit", depositAmount, sessionUser.FirstName,"Self");                   
+                    TransactionHistory RecordedTransaction = new TransactionHistory(foundAcount.Id, "Credit", depositAmount, sessionUser.FirstName,"Self");
                     db.AddEntity(RecordedTransaction);
+                    db.SaveChanges();
+
                     Console.WriteLine($"Success!! You have deposited {depositAmount} and your new balance is {foundAcount.accountBalance}.");
-                    AccountService.DisplayAccountInfo(sessionUser);
+                    _accountService.DisplayAccountInfo(sessionUser);
                     Console.WriteLine("Press Enter key to return to main menu");
                 }
                 else
@@ -95,11 +104,11 @@ namespace BankApp.Services.TransactionServices
 
         }
 
-        public void Transfer(User sessionUser)
+        public async Task Transfer(User sessionUser)
         {
-            BankApp_DbContext db = new BankApp_DbContext();
-            List<User> users = db.GetAllEntities<User>();
-            List<Account> accounts = db.GetAllEntities<Account>();
+            BankAppDbContext db = new BankAppDbContext();
+            List<User> users = await db.GetAllEntities<User>();
+            List<Account> accounts = await db.GetAllEntities<Account>();
 
 
             //string amount = Console.ReadLine();
@@ -147,7 +156,7 @@ namespace BankApp.Services.TransactionServices
             db.AddEntity(senderTransaction);
             db.AddEntity(receiverTransaction);
 
-            AccountService.DisplayAccountInfo(sessionUser);
+            _accountService.DisplayAccountInfo(sessionUser);
 
             Console.WriteLine($"Transfer successful! {transferAmount} has been transferred to {receiver.FirstName}.");
             Console.WriteLine($"Sender's new balance: {senderAccount.accountBalance}");

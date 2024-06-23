@@ -9,9 +9,9 @@ namespace BankApp.Services.TransactionServices
 {
     public interface ITransactionService
     {
-        void WithdrawMoney(User sessionUser);
-        void DepositMoney(User sessionUser);
-        void Transfer(User sessionUser);
+        Task WithdrawMoney(User sessionUser);
+        Task DepositMoney(User sessionUser);
+        Task Transfer(User sessionUser);
 
     }
 }

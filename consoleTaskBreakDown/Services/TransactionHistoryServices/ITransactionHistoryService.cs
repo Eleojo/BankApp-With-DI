@@ -9,6 +9,6 @@ namespace BankApp.Services.TransactionHistoryServices
 {
     public interface ITransactionHistoryService
     {
-        void ViewTransactionHistory(User sessionUser);
+        Task DisplayTransactionHistory(User sessionUser);
     }
 }
